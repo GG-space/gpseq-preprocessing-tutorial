@@ -23,14 +23,19 @@
 
 ## Introduction
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+The pre-processing of GPSeq's sequencing output generates a BED file per restriction condition with the count of de-duplicated reads per restriction site. The pipeline achieves this with the following workflow:
 
-Old pipeline ([here](https://github.com/ggirelli/gpseq-seq-gg)).
+* Quality control.
+* Flag extraction and frequency calculation.
+* Manual check of barcode flag frequency.
+* Filtering by prefix.
+* Mapping to reference genome.
+* Filtering out bad alignments.
+* Correcting mapping on negative strand.
+* Grouping reads and assigning them to restriction sites.
+* De-duplicating.
+
+More details on each step can be found in the tutorial below. The current pipeline is *under development*. The old pipeline (`gpseq-seq-gg`) is available [here](https://github.com/ggirelli/gpseq-seq-gg).
 
 ## Pre-processing tutorial
 
@@ -63,6 +68,25 @@ proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     - `fastqc`
     - `sambamba`
 
+Install python requirements with:
+
+```bash
+pip3 install fastx-barber joblib numpy pandas rich tqdm
+```
+
+Install R requirements by running the following in an R shell:
+
+```R
+install.packages(c("argparser", "cowplot", "data.table", "ggplot2", "pbapply"))
+```
+
+To install the other software on Ubuntu, run:
+
+```bash
+sudo apt update
+sudo apt install bowtie2 sambamba fastqc
+```
+
 ---
 
 ### 0. Parameters
@@ -76,6 +100,14 @@ cutsite_path="/mnt/data/Resources/mm10.r95/recognition_sites/mm10.r95.MboI.bed.g
 threads=10
 ```
 
+Five parameters are required to run the pipeline:
+
+* `input` is the path to the input fastq file (generally gzipped and merge by all lanes).
+* `libid` is the library ID (for Illumina filenames, the first bit of the fastq name).
+* `bowtie2_ref` is the path to the bowtie2 index.
+* `cutsite_ref` is the path to a (gzipped) BED file with the location of known restriction sites.
+* `threads` is the number of threads used for parallelization.
+
 ---
 
 ### 1. QC
@@ -85,6 +117,8 @@ threads=10
 mkdir -p fastqc
 fastqc $input -o fastqc --nogroup
 ```
+
+Quality control of the fastq files is run using the FastQC tool. A description of each individual plot and their interpretation can be found [here](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
 
 ---
 
@@ -103,9 +137,13 @@ fbarber flag extract \
     --threads $threads --chunk-size 200000
 ```
 
+Then, we use `fastx-barber` to extract certain flags present in the prefix. In this case, we use a `--simple-pattern` where we specify that the Unique Molecular Identifier (UMI) is 8 nt, the barcode is 8 nt, and the cutsite is 4 nt. The frequency of each value for the barcode and cutsite flags is also calculated, and reads are filtered out for UMI of sufficient read quality. This step also removes the prefix from the reads, allowing them to be directly mapped to a reference genome.
+
 ---
 
 ### 3. Manual check
+
+This step will soon be performed by a script. Currently, the frequency of the cutsite and barcode values is checked to see that the expected barcode and cutsite sequences are the most frequent.
 
 ---
 
@@ -122,6 +160,8 @@ fbarber flag regex \
     --threads $threads --chunk-size 200000
 ```
 
+Then, we use again `fastx-barber` to select only reads with the expected sequence for the barcode and cutsite flag (this can be adjusted based on the manual check). Moreover, we allow for up to two mismatches to the expected sequences (with `{s<2}`).
+
 ---
 
 ### 5. Map
@@ -134,6 +174,8 @@ bowtie2 \
     --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder -p $threads \
     -S mapping/$libid.sam &> mapping/$libid.mapping.log
 ```
+
+We then align the reads to the reference genome, generating a SAM file.
 
 ---
 
@@ -155,6 +197,13 @@ sambamba view -q mapping/$libid.bam -f bam -t $threads \
     > mapping/$libid.clean.bam
 sambamba view -q mapping/$libid.clean.bam -f bam -c -t $threads > mapping/$libid.clean_count.txt
 ```
+
+We then use sambamba to convert the SAM file to a BAM file and apply the following filters to the reads:
+
+* Mapping quality should be 30 or higher.
+* Any reads mapped to the mitochondrial genome are discarded.
+* Secondary alignments and unmapped reads are discarded.
+* If the sequencing is pair-ended, chimeric reads (with the two ends on different chromosomes).
 
 ---
 
@@ -180,6 +229,8 @@ cut -f 1-4 atcs/$libid.clean.plus.bed | tr "~" $'\t' | cut -f 1,2,7,16 | gzip \
 rm atcs/$libid.clean.plus.bam atcs/$libid.clean.plus.bed
 ```
 
+Reads aligned to the reverse strand are shifted to the first nucleotide of the restriction site.
+
 ---
 
 ### 8. Group reads
@@ -194,6 +245,8 @@ scripts/group_umis.py \
 rm atcs/$libid.clean.plus.umi.txt.gz atcs/$libid.clean.revs.umi.txt.gz
 ```
 
+Reads mapped to the same location are grouped together.
+
 ---
 
 ### 9. Assign read groups to sites
@@ -205,6 +258,8 @@ scripts/umis2cutsite.py \
     atcs/$libid.clean.umis_at_cs.txt.gz --compress --threads $threads
 rm atcs/$libid.clean.umis.txt.gz
 ```
+
+Read groups are assigned to the closest restriction site.
 
 ---
 
@@ -219,6 +274,8 @@ scripts/umi_dedupl.R \
     -c $threads -r 10000
 ```
 
+Reads assigned to the same restriction site are de-duplicated based on their UMI sequences.
+
 ---
 
 ### 11. Generate final BED file
@@ -231,13 +288,10 @@ zcat dedup/$libid.clean.umis_dedupd.txt.gz | \
     gzip > bed/$libid.bed.gz
 ```
 
+A BED file is generated with the location and de-duplicated read count for each restriction site.
+
 ---
 
 ### 12. Summary table
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
-cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Running the `mk_summary_table.py` script creates a short summary table that can be directly pasted on the shared Google Spreadsheet.
