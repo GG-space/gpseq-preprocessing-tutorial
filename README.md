@@ -4,6 +4,7 @@
 
 - [Introduction](#introduction)
 - [Pre-processing tutorial](#pre-processing-tutorial)
+    - [Requirements](#requirements)
     - [0. Parameters](#0-parameters)
     - [1. QC](#1-qc)
     - [2. Extract flags and their frequency](#2-extract-flags-and-their-frequency)
@@ -29,7 +30,29 @@ consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
 cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
+Old pipeline ([here](https://github.com/ggirelli/gpseq-seq-gg)).
+
 ## Pre-processing tutorial
+
+### Requirements
+
+* Python packages
+    - `fastx-barber`
+    - `joblib`
+    - `numpy`
+    - `pandas`
+    - `rich`
+    - `tqdm`
+* R packages
+    - `argparser`
+    - `cowplot`
+    - `data.table`
+    - `ggplot2`
+    - `pbapply`
+* Other software
+    - `bowtie2`
+    - `fastqc`
+    - `sambamba`
 
 ### 0. Parameters
 
