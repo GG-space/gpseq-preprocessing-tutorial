@@ -16,6 +16,7 @@
     - [9. Assign read groups to sites](#9-assign-read-groups-to-sites)
     - [10. De-duplicate](#10-de-duplicate)
     - [11. Generate final BED file](#11-generate-final-bed-file)
+    - [12. Summary table](#12-summary-table)
 
 <!-- /MarkdownTOC -->
 
@@ -172,4 +173,13 @@ mkdir -p bed
 zcat dedup/$libid.clean.umis_dedupd.txt.gz | \
     awk 'BEGIN{FS=OFS="\t"}{print $1 FS $2 FS $2 FS "pos_"NR FS $4}' | \
     gzip > bed/$libid.bed.gz
-``` 
+```
+
+### 12. Summary table
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
