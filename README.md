@@ -2,22 +2,35 @@
 
 <!-- MarkdownTOC -->
 
-- [Parameters](#parameters)
-- [QC](#qc)
-- [Extract flags and their frequency](#extract-flags-and-their-frequency)
-- [Manual check](#manual-check)
-- [Filter by prefix](#filter-by-prefix)
-- [Map](#map)
-- [Filter mapping](#filter-mapping)
-- [Correct mapping](#correct-mapping)
-- [Group reads](#group-reads)
-- [Assign read groups to sites](#assign-read-groups-to-sites)
-- [De-duplicate](#de-duplicate)
-- [Generate final BED file](#generate-final-bed-file)
+- [Introduction](#introduction)
+- [Pre-processing tutorial](#pre-processing-tutorial)
+    - [0. Parameters](#0-parameters)
+    - [1. QC](#1-qc)
+    - [2. Extract flags and their frequency](#2-extract-flags-and-their-frequency)
+    - [3. Manual check](#3-manual-check)
+    - [4. Filter by prefix](#4-filter-by-prefix)
+    - [5. Map](#5-map)
+    - [6. Filter mapping](#6-filter-mapping)
+    - [7. Correct mapping](#7-correct-mapping)
+    - [8. Group reads](#8-group-reads)
+    - [9. Assign read groups to sites](#9-assign-read-groups-to-sites)
+    - [10. De-duplicate](#10-de-duplicate)
+    - [11. Generate final BED file](#11-generate-final-bed-file)
 
 <!-- /MarkdownTOC -->
 
-### Parameters
+## Introduction
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+## Pre-processing tutorial
+
+### 0. Parameters
 
 ```bash
 # Parameters
@@ -28,7 +41,7 @@ cutsite_path="/mnt/data/Resources/mm10.r95/recognition_sites/mm10.r95.MboI.bed.g
 threads=10
 ```
 
-### QC
+### 1. QC
 
 ```bash
 # FASTQ quality control
@@ -36,7 +49,7 @@ mkdir -p fastqc
 fastqc $input -o fastqc --nogroup
 ```
 
-### Extract flags and their frequency
+### 2. Extract flags and their frequency
 
 ```bash
 # Extract flags and filter by UMI quality
@@ -51,9 +64,9 @@ fbarber flag extract \
     --threads $threads --chunk-size 200000
 ```
 
-### Manual check
+### 3. Manual check
 
-### Filter by prefix
+### 4. Filter by prefix
 
 ```bash
 # Filter by prefix
@@ -66,7 +79,7 @@ fbarber flag regex \
     --threads $threads --chunk-size 200000
 ```
 
-### Map
+### 5. Map
 
 ```bash
 # Align
@@ -77,7 +90,7 @@ bowtie2 \
     -S mapping/$libid.sam &> mapping/$libid.mapping.log
 ```
 
-### Filter mapping
+### 6. Filter mapping
 
 ```bash
 # Filter alignment
@@ -96,7 +109,7 @@ sambamba view -q mapping/$libid.bam -f bam -t $threads \
 sambamba view -q mapping/$libid.clean.bam -f bam -c -t $threads > mapping/$libid.clean_count.txt
 ```
 
-### Correct mapping
+### 7. Correct mapping
 
 ```bash
 # Correct aligned position
@@ -118,7 +131,7 @@ cut -f 1-4 atcs/$libid.clean.plus.bed | tr "~" $'\t' | cut -f 1,2,7,16 | gzip \
 rm atcs/$libid.clean.plus.bam atcs/$libid.clean.plus.bed
 ```
 
-### Group reads
+### 8. Group reads
 
 ```bash
 # Group UMIs
@@ -130,7 +143,7 @@ scripts/group_umis.py \
 rm atcs/$libid.clean.plus.umi.txt.gz atcs/$libid.clean.revs.umi.txt.gz
 ```
 
-### Assign read groups to sites
+### 9. Assign read groups to sites
 
 ```bash
 # Assign UMIs to cutsites
@@ -140,7 +153,7 @@ scripts/umis2cutsite.py \
 rm atcs/$libid.clean.umis.txt.gz
 ```
 
-### De-duplicate
+### 10. De-duplicate
 
 ```bash
 # Deduplicate
@@ -151,7 +164,7 @@ scripts/umi_dedupl.R \
     -c $threads -r 10000
 ```
 
-### Generate final BED file
+### 11. Generate final BED file
 
 ```bash
 # Generate final bed
