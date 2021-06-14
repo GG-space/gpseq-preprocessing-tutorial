@@ -54,6 +54,8 @@ Old pipeline ([here](https://github.com/ggirelli/gpseq-seq-gg)).
     - `fastqc`
     - `sambamba`
 
+---
+
 ### 0. Parameters
 
 ```bash
@@ -65,6 +67,8 @@ cutsite_path="/mnt/data/Resources/mm10.r95/recognition_sites/mm10.r95.MboI.bed.g
 threads=10
 ```
 
+---
+
 ### 1. QC
 
 ```bash
@@ -72,6 +76,8 @@ threads=10
 mkdir -p fastqc
 fastqc $input -o fastqc --nogroup
 ```
+
+---
 
 ### 2. Extract flags and their frequency
 
@@ -88,7 +94,11 @@ fbarber flag extract \
     --threads $threads --chunk-size 200000
 ```
 
+---
+
 ### 3. Manual check
+
+---
 
 ### 4. Filter by prefix
 
@@ -103,6 +113,8 @@ fbarber flag regex \
     --threads $threads --chunk-size 200000
 ```
 
+---
+
 ### 5. Map
 
 ```bash
@@ -113,6 +125,8 @@ bowtie2 \
     --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder -p $threads \
     -S mapping/$libid.sam &> mapping/$libid.mapping.log
 ```
+
+---
 
 ### 6. Filter mapping
 
@@ -132,6 +146,8 @@ sambamba view -q mapping/$libid.bam -f bam -t $threads \
     > mapping/$libid.clean.bam
 sambamba view -q mapping/$libid.clean.bam -f bam -c -t $threads > mapping/$libid.clean_count.txt
 ```
+
+---
 
 ### 7. Correct mapping
 
@@ -155,6 +171,8 @@ cut -f 1-4 atcs/$libid.clean.plus.bed | tr "~" $'\t' | cut -f 1,2,7,16 | gzip \
 rm atcs/$libid.clean.plus.bam atcs/$libid.clean.plus.bed
 ```
 
+---
+
 ### 8. Group reads
 
 ```bash
@@ -167,6 +185,8 @@ scripts/group_umis.py \
 rm atcs/$libid.clean.plus.umi.txt.gz atcs/$libid.clean.revs.umi.txt.gz
 ```
 
+---
+
 ### 9. Assign read groups to sites
 
 ```bash
@@ -176,6 +196,8 @@ scripts/umis2cutsite.py \
     atcs/$libid.clean.umis_at_cs.txt.gz --compress --threads $threads
 rm atcs/$libid.clean.umis.txt.gz
 ```
+
+---
 
 ### 10. De-duplicate
 
@@ -188,6 +210,8 @@ scripts/umi_dedupl.R \
     -c $threads -r 10000
 ```
 
+---
+
 ### 11. Generate final BED file
 
 ```bash
@@ -197,6 +221,8 @@ zcat dedup/$libid.clean.umis_dedupd.txt.gz | \
     awk 'BEGIN{FS=OFS="\t"}{print $1 FS $2 FS $2 FS "pos_"NR FS $4}' | \
     gzip > bed/$libid.bed.gz
 ```
+
+---
 
 ### 12. Summary table
 
