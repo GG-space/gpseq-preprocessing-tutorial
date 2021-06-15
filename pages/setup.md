@@ -34,7 +34,7 @@ mkdir -p $HOME/gpseq-tutorial/tools/sra-tools/
 cd $HOME/gpseq-tutorial/tools/sra-tools/
 curl https://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/2.9.6/sratoolkit.2.9.6-ubuntu64.tar.gz -o sratoolkit.2.9.6-ubuntu64.tar.gz
 tar -xvzf sratoolkit.2.9.6-ubuntu64.tar.gz
-export PATH=$HOME/tools/sra-tools/sratoolkit.2.9.6-ubuntu64/bin:$PATH
+export PATH=$HOME/gpseq-tutorial/tools/sra-tools/sratoolkit.2.9.6-ubuntu64/bin:$PATH
 fasterq-dump -h # check installation
 ```
 
