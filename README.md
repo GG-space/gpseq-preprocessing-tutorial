@@ -26,45 +26,8 @@ More details on each step can be found in the tutorial below. The current pipeli
 
 ## Requirements
 
-The tutorial requires the following software ad packages:
-
-* Python packages
-    - `fastx-barber`
-    - `joblib`
-    - `numpy`
-    - `pandas`
-    - `rich`
-    - `tqdm`
-* R packages
-    - `argparser`
-    - `cowplot`
-    - `data.table`
-    - `ggplot2`
-    - `pbapply`
-* Other software
-    - `bowtie2`
-    - `fastqc`
-    - `sambamba`
-
-Install python requirements with:
-
-```bash
-pip3 install fastx-barber joblib numpy pandas rich tqdm
-```
-
-Install R requirements by running the following in an R shell:
-
-```R
-install.packages(c("argparser", "cowplot", "data.table", "ggplot2", "pbapply"))
-```
-
-To install the other software on Ubuntu, run:
-
-```bash
-sudo apt update
-sudo apt install bowtie2 sambamba fastqc
-```
+The tutorial requires a few programs and R/Python packages. Before proceeding, please consult the requirements page [here](pages/requirements.md).
 
 ## Tutorial
 
-Follow the step-by-step tutorial [here](tutorial.md).
+Follow the step-by-step tutorial [here](pages/tutorial.md).
