@@ -6,7 +6,7 @@ Before proceeding, please consult the requirements page [here](../pages/requirem
 
 - [Input](#input)
 - [Reference genome](#reference-genome)
-- [Cutsite list](#cutsite-list)
+- [Restriction site list](#restriction-site-list)
 - [Parameters](#parameters)
 
 <!-- /MarkdownTOC -->
@@ -37,7 +37,7 @@ export PATH=$HOME/tools/sra-tools/sratoolkit.2.9.6-ubuntu64/bin:$PATH
 fasterq-dump -h # check installation
 ```
 
-Then, download the input data with the following (*NOTE. As the file is ~2 GB it might take a few minutes to complete the download.*):
+Then, download the input data with the following (*NOTE. As the file is ~15 GB it might take a few minutes to complete the download.*):
 
 ```bash
 cd $HOME/gpseq-tutorial
@@ -47,9 +47,11 @@ mv fastq/SRR9974287.fastq fastq/TUTORIAL01_S1_LALL_R1_001.fastq
 gzip fastq/TUTORIAL01_S1_LALL_R1_001.fastq
 ```
 
+While the input file downloads and compresses, we recommend moving on to the next step and prepare the reference.
+
 ## Reference genome
 
-Download the `GRCh37.p13` reference genome with the following:
+Download the `GRCh38.r104` reference genome with the following:
 
 ```bash
 mkdir reference
@@ -58,14 +60,22 @@ zcat reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz | sed 's/>/>
 rm reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz
 ```
 
-Then, build the bowtie2 index with:
+Then, build the bowtie2 index with (*NOTE. The number of threads should be adapted to your machine.*):
 
 ```bash
+cd $HOME/gpseq-tutorial/reference
+bowtie2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz Homo_sapiens.GRCh38.dna.primary_assembly --threads 2 --verbose
+cd $HOME/gpseq-tutorial
 ```
 
-## Cutsite list
+While the aligner index is building, we recommend moving already to the next step and generate the list of restriction sites.
+
+## Restriction site list
+
+Generate a BED file with the location of restriction sites by running the following:
 
 ```bash
+fbarber find_seq reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz AAGCTT  --case-insensitive --global-name --output reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz --log-file reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.log
 ```
 
 ## Parameters
@@ -76,7 +86,7 @@ Execute the following to set the parameter values.
 # Parameters
 input="$HOME/fastq/TUTORIAL01_S1_LALL_R1_001.fastq.gz"
 libid="TUTORIAL01"
-bowtie2_ref="$HOME/reference/"
+bowtie2_ref="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
 cutsite_path="$HOME/reference/"
 threads=10
 ```
