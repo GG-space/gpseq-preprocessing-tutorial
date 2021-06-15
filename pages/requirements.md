@@ -3,7 +3,7 @@
 The tutorial requires the following software ad packages:
 
 * Python packages
-    - `fastx-barber`
+    - `fastx-barber v0.1.5`
     - `joblib`
     - `numpy`
     - `pandas`
@@ -16,9 +16,9 @@ The tutorial requires the following software ad packages:
     - `ggplot2`
     - `pbapply`
 * Other software
-    - `bowtie2`
-    - `fastqc`
-    - `sambamba`
+    - `bowtie2 v2.3.5.1`
+    - `fastqc v0.11.9`
+    - `sambamba v0.7.1`
 
 ## Install Python packages
 
