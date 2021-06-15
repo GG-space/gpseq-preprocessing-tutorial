@@ -26,7 +26,9 @@ More details on each step can be found in the tutorial below. The current pipeli
 
 ## Requirements
 
-The tutorial requires a few programs and R/Python packages. Before proceeding, please consult the requirements page [here](pages/requirements.md).
+The tutorial requires a few programs and R/Python packages.
+
+Before proceeding, please consult the requirements page [here](pages/requirements.md).
 
 ## Tutorial
 

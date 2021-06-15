@@ -2,7 +2,7 @@
 
 <!-- MarkdownTOC -->
 
-- [0. Parameters](#0-parameters)
+- [0. Parameters and input](#0-parameters-and-input)
 - [1. QC](#1-qc)
 - [2. Extract flags and their frequency](#2-extract-flags-and-their-frequency)
 - [3. Manual check](#3-manual-check)
@@ -18,7 +18,9 @@
 
 <!-- /MarkdownTOC -->
 
-### 0. Parameters
+Before proceeding, please consult the requirements page [here](../pages/requirements.md).
+
+### 0. Parameters and input
 
 ```bash
 # Parameters
