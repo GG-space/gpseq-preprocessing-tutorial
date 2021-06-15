@@ -42,12 +42,12 @@ fbarber flag extract \
     --filter-qual-output fastq_hq/$libid.lq.fastq.gz \
     --unmatched-output fastq_hq/$libid.unmatched.fastq.gz \
     --log-file fastq_hq/$libid.log \
-    --pattern 'umi8bc8cs4' --simple-pattern \
+    --pattern 'umi8bc8cs6' --simple-pattern \
     --flagstats bc cs --filter-qual-flags umi,30,.2 \
     --threads $threads --chunk-size 200000
 ```
 
-Then, we use `fastx-barber` to extract certain flags present in the prefix. In this case, we use a `--simple-pattern` where we specify that the Unique Molecular Identifier (UMI) is 8 nt, the barcode is 8 nt, and the cutsite is 4 nt. The frequency of each value for the barcode and cutsite flags is also calculated, and reads are filtered out for UMI of sufficient read quality. This step also removes the prefix from the reads, allowing them to be directly mapped to a reference genome.
+Then, we use `fastx-barber` to extract certain flags present in the prefix. In this case, we use a `--simple-pattern` where we specify that the Unique Molecular Identifier (UMI) is 8 nt, the barcode is 8 nt, and the cutsite is 6 nt. The frequency of each value for the barcode and cutsite flags is also calculated, and reads are filtered out for UMI of sufficient read quality. This step also removes the prefix from the reads, allowing them to be directly mapped to a reference genome.
 
 ## 3. Manual check
 
