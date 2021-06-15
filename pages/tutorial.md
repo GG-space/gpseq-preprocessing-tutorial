@@ -1,8 +1,9 @@
 # Tutorial
 
+Before proceeding, please first consult the requirements page [here](../pages/requirements.md) and set up the tutorial by following the instructions in the setup page [here](../pages/setup.md).
+
 <!-- MarkdownTOC -->
 
-- [0. Parameters and input](#0-parameters-and-input)
 - [1. QC](#1-qc)
 - [2. Extract flags and their frequency](#2-extract-flags-and-their-frequency)
 - [3. Manual check](#3-manual-check)
@@ -18,30 +19,7 @@
 
 <!-- /MarkdownTOC -->
 
-Before proceeding, please consult the requirements page [here](../pages/requirements.md).
-
-### 0. Parameters and input
-
-```bash
-# Parameters
-input="fastq/KG35_S6_LALL_R1_001.fastq.gz"
-libid="KG35"
-bowtie2_ref="/mnt/data/Resources/references/GRCm38.r95.dna/Mus_musculus.GRCm38.95.dna.fa"
-cutsite_path="/mnt/data/Resources/mm10.r95/recognition_sites/mm10.r95.MboI.bed.gz"
-threads=10
-```
-
-Five parameters are required to run the pipeline:
-
-* `input` is the path to the input fastq file (generally gzipped and merge by all lanes).
-* `libid` is the library ID (for Illumina filenames, the first bit of the fastq name).
-* `bowtie2_ref` is the path to the bowtie2 index.
-* `cutsite_ref` is the path to a (gzipped) BED file with the location of known restriction sites.
-* `threads` is the number of threads used for parallelization.
-
----
-
-### 1. QC
+## 1. QC
 
 ```bash
 # FASTQ quality control
@@ -51,9 +29,7 @@ fastqc $input -o fastqc --nogroup
 
 Quality control of the fastq files is run using the FastQC tool. A description of each individual plot and their interpretation can be found [here](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/3%20Analysis%20Modules/).
 
----
-
-### 2. Extract flags and their frequency
+## 2. Extract flags and their frequency
 
 ```bash
 # Extract flags and filter by UMI quality
@@ -70,15 +46,11 @@ fbarber flag extract \
 
 Then, we use `fastx-barber` to extract certain flags present in the prefix. In this case, we use a `--simple-pattern` where we specify that the Unique Molecular Identifier (UMI) is 8 nt, the barcode is 8 nt, and the cutsite is 4 nt. The frequency of each value for the barcode and cutsite flags is also calculated, and reads are filtered out for UMI of sufficient read quality. This step also removes the prefix from the reads, allowing them to be directly mapped to a reference genome.
 
----
-
-### 3. Manual check
+## 3. Manual check
 
 This step will soon be performed by a script. Currently, the frequency of the cutsite and barcode values is checked to see that the expected barcode and cutsite sequences are the most frequent.
 
----
-
-### 4. Filter by prefix
+## 4. Filter by prefix
 
 ```bash
 # Filter by prefix
@@ -93,9 +65,7 @@ fbarber flag regex \
 
 Then, we use again `fastx-barber` to select only reads with the expected sequence for the barcode and cutsite flag (this can be adjusted based on the manual check). Moreover, we allow for up to two mismatches to the expected sequences (with `{s<2}`).
 
----
-
-### 5. Map
+## 5. Map
 
 ```bash
 # Align
@@ -108,9 +78,7 @@ bowtie2 \
 
 We then align the reads to the reference genome, generating a SAM file.
 
----
-
-### 6. Filter mapping
+## 6. Filter mapping
 
 ```bash
 # Filter alignment
@@ -136,9 +104,7 @@ We then use sambamba to convert the SAM file to a BAM file and apply the followi
 * Secondary alignments and unmapped reads are discarded.
 * If the sequencing is pair-ended, chimeric reads (with the two ends on different chromosomes).
 
----
-
-### 7. Correct mapping
+## 7. Correct mapping
 
 ```bash
 # Correct aligned position
@@ -162,9 +128,7 @@ rm atcs/$libid.clean.plus.bam atcs/$libid.clean.plus.bed
 
 Reads aligned to the reverse strand are shifted to the first nucleotide of the restriction site.
 
----
-
-### 8. Group reads
+## 8. Group reads
 
 ```bash
 # Group UMIs
@@ -178,9 +142,7 @@ rm atcs/$libid.clean.plus.umi.txt.gz atcs/$libid.clean.revs.umi.txt.gz
 
 Reads mapped to the same location are grouped together.
 
----
-
-### 9. Assign read groups to sites
+## 9. Assign read groups to sites
 
 ```bash
 # Assign UMIs to cutsites
@@ -192,9 +154,7 @@ rm atcs/$libid.clean.umis.txt.gz
 
 Read groups are assigned to the closest restriction site.
 
----
-
-### 10. De-duplicate
+## 10. De-duplicate
 
 ```bash
 # Deduplicate
@@ -207,9 +167,7 @@ scripts/umi_dedupl.R \
 
 Reads assigned to the same restriction site are de-duplicated based on their UMI sequences.
 
----
-
-### 11. Generate final BED file
+## 11. Generate final BED file
 
 ```bash
 # Generate final bed
@@ -221,8 +179,6 @@ zcat dedup/$libid.clean.umis_dedupd.txt.gz | \
 
 A BED file is generated with the location and de-duplicated read count for each restriction site.
 
----
-
-### 12. Summary table
+## 12. Summary table
 
 Running the `mk_summary_table.py` script creates a short summary table that can be directly pasted on the shared Google Spreadsheet.
