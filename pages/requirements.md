@@ -20,7 +20,7 @@ The tutorial requires the following software ad packages:
     - `fastqc`
     - `sambamba`
 
-## Python packages
+## Install Python packages
 
 To verify if the packages are already installed, run:
 
@@ -39,7 +39,7 @@ The output should be a list of the packages and their installed versions. if a p
 pip3 install fastx-barber joblib numpy pandas rich tqdm
 ```
 
-## R packages
+## Install R packages
 
 To verify if the packages are already installed, run the following in an R shell:
 
@@ -58,9 +58,9 @@ Install missing R packages by running the following in an R shell (*NOTE. Includ
 install.packages(c("argparser", "cowplot", "data.table", "ggplot2", "pbapply"))
 ```
 
-## Other software
+## Install Other software
 
-### Ubuntu
+### On Ubuntu
 
 To check if the software is already available, run:
 
