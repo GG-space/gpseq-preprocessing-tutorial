@@ -48,7 +48,7 @@ Then, we use `fastx-barber` to extract certain flags present in the prefix. In t
 
 ## 3. Manual check
 
-This step will soon be performed by a script. Currently, the frequency of the cutsite and barcode values is checked to see that the expected barcode and cutsite sequences are the most frequent.
+This step will soon be performed by a script. Currently, the frequency of the cutsite and barcode values is checked to see that the expected barcode and cutsite sequences are the most frequent (`GCTTGTCA` and `AAGCTT`, respectively).
 
 ## 4. Filter by prefix
 
@@ -59,7 +59,7 @@ fbarber flag regex \
     fastq_hq/$libid.hq.fastq.gz fastq_prefix/$libid.fastq.gz \
     --unmatched-output fastq_prefix/$libid.unmatched.fastq.gz \
     --log-file fastq_prefix/$libid.log \
-    --pattern "bc,^(?<bc>GTCGTCGA){s<2}$" "cs,^(?<cs>GATC){s<2}$" \
+    --pattern "bc,^(?<bc>GCTTGTCA){s<2}$" "cs,^(?<cs>AAGCTT){s<2}$" \
     --threads $threads --chunk-size 200000
 ```
 
