@@ -8,6 +8,7 @@ Before proceeding, please consult the requirements page [here](../pages/requirem
 - [Reference genome](#reference-genome)
 - [Restriction site list](#restriction-site-list)
 - [Parameters](#parameters)
+- [Tutorial](#tutorial)
 
 <!-- /MarkdownTOC -->
 
@@ -56,7 +57,7 @@ Download the `GRCh38.r104` reference genome with the following:
 ```bash
 mkdir reference
 curl http://ftp.ensembl.org/pub/release-104/fasta/homo_sapiens/dna/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz --output reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz
-zcat reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz | sed 's/>/>chr/' | gzip > reference/Homo_sapiens.GRCh38.dna.primary_assembly.fastq.gz
+zcat reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz | sed 's/>/>chr/' | gzip > reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz
 rm reference/Homo_sapiens.GRCh38.dna.primary_assembly.noChr.fa.gz
 ```
 
@@ -64,7 +65,7 @@ Then, build the bowtie2 index with (*NOTE. The number of threads should be adapt
 
 ```bash
 cd $HOME/gpseq-tutorial/reference
-bowtie2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz Homo_sapiens.GRCh38.dna.primary_assembly --threads 2 --verbose
+bowtie2-build Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz Homo_sapiens.GRCh38.dna.primary_assembly --threads 10 --verbose
 cd $HOME/gpseq-tutorial
 ```
 
@@ -75,7 +76,7 @@ While the aligner index is building, we recommend moving already to the next ste
 Generate a BED file with the location of restriction sites by running the following:
 
 ```bash
-fbarber find_seq reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz AAGCTT  --case-insensitive --global-name --output reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz --log-file reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.log
+fbarber find_seq reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz AAGCTT --case-insensitive --global-name --output reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz --log-file reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.log
 ```
 
 ## Parameters
@@ -86,8 +87,8 @@ Execute the following to set the parameter values.
 # Parameters
 input="$HOME/fastq/TUTORIAL01_S1_LALL_R1_001.fastq.gz"
 libid="TUTORIAL01"
-bowtie2_ref="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa"
-cutsite_path="$HOME/reference/"
+bowtie2_ref="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly"
+cutsite_path="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz"
 threads=10
 ```
 
@@ -98,3 +99,7 @@ Five parameters are required to run the pipeline:
 * `bowtie2_ref` is the path to the bowtie2 index.
 * `cutsite_ref` is the path to a (gzipped) BED file with the location of known restriction sites.
 * `threads` is the number of threads used for parallelization.
+
+## Tutorial
+
+Now you can proceed with the [tutorial](../pages/tutorial.md).
