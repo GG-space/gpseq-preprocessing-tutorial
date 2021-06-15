@@ -85,10 +85,10 @@ Execute the following to set the parameter values.
 
 ```bash
 # Parameters
-input="$HOME/fastq/TUTORIAL01_S1_LALL_R1_001.fastq.gz"
+input="$HOME/gpseq-tutorial/fastq/TUTORIAL01_S1_LALL_R1_001.fastq.gz"
 libid="TUTORIAL01"
-bowtie2_ref="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly"
-cutsite_path="$HOME/reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz"
+bowtie2_ref="$HOME/gpseq-tutorial/reference/Homo_sapiens.GRCh38.dna.primary_assembly"
+cutsite_path="$HOME/gpseq-tutorial/reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz"
 threads=10
 ```
 
