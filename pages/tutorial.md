@@ -2,7 +2,7 @@
 
 Before proceeding, please first consult the requirements page [here](../pages/requirements.md) and set up the tutorial by following the instructions in the setup page [here](../pages/setup.md).
 
-Specifically, up to step 4, only the input fastq file and the dependency software are required. Reference genome, aligner index, and recognition site list are necessary to proceed from step 5 onward.
+Regarding the setup instructions, up to step 4, only the input fastq file and the dependency software are required. Reference genome, aligner index, and recognition site list are necessary to proceed from step 5 onward.
 
 <!-- MarkdownTOC -->
 
