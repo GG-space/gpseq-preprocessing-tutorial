@@ -24,6 +24,7 @@ Regarding the setup instructions, up to step 4, only the input fastq file and th
 ## 1. QC
 
 ```bash
+cd $HOME/gpseq-tutorial
 # FASTQ quality control
 mkdir -p fastqc
 fastqc $input -o fastqc --nogroup
