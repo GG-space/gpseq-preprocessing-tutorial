@@ -6,7 +6,6 @@ from collections import defaultdict
 import gzip
 import logging
 from rich.logging import RichHandler  # type: ignore
-from rich.progress import track  # type: ignore
 import sys
 from tqdm import tqdm  # type: ignore
 from typing import DefaultDict, IO, List, Tuple
@@ -97,8 +96,8 @@ with get_oh(args.output, args.compress_level) as OH:
     logging.info(f"Writing output to: {OH.name}")
     if args.compress_level > 0:
         logging.info(f"Compression level: {args.compress_level}")
-    for chrom, pos_dict in track(umi_dict.items(), description="Chromosome"):
-        for pos, (seq, qual) in track(pos_dict.items(), description="Position"):
+    for chrom, pos_dict in tqdm(umi_dict.items(), desc="Chromosome"):
+        for pos, (seq, qual) in tqdm(pos_dict.items(), desc="Position"):
             OH.write(
                 args.sep.join([chrom, str(pos), " ".join(seq), " ".join(qual)]) + "\n"
             )
