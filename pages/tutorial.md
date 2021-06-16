@@ -139,7 +139,7 @@ scripts/group_umis.py \
     atcs/$libid.clean.plus.umi.txt.gz \
     atcs/$libid.clean.revs.umi.txt.gz \
     atcs/$libid.clean.umis.txt.gz \
-    --compress-level 6 --len 4
+    --compress-level 6 --len 6
 rm atcs/$libid.clean.plus.umi.txt.gz atcs/$libid.clean.revs.umi.txt.gz
 ```
 
