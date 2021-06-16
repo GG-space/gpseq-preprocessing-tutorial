@@ -4,6 +4,7 @@ The tutorial requires the following software ad packages:
 
 * Python packages
     - `fastx-barber v0.1.5`
+        + **NOTE**. If using Python 3.6 or 3.7, version 0.1.3 will be installed instead, which has a known issue with running `fbarber find_seq` with the `--case-insensitive` option. We recommend upgrading to Python3.8+ or skipping the `--case-insensitive` option (in the scope of this tutorial).
     - `joblib`
     - `numpy`
     - `pandas`

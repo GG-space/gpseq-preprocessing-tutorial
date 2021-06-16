@@ -7,6 +7,7 @@ Before proceeding, please consult the requirements page [here](../pages/requirem
 - [Input](#input)
 - [Reference genome](#reference-genome)
 - [Restriction site list](#restriction-site-list)
+- [Download other scripts](#download-other-scripts)
 - [Parameters](#parameters)
 - [Tutorial](#tutorial)
 
@@ -77,6 +78,20 @@ Generate a BED file with the location of restriction sites by running the follow
 
 ```bash
 fbarber find_seq reference/Homo_sapiens.GRCh38.dna.primary_assembly.fa.gz AAGCTT --case-insensitive --global-name --output reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz --log-file reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.log
+
+# Check the output file
+zcat reference/Homo_sapiens.GRCh38.dna.primary_assembly.HindIII_sites.bed.gz | less
+```
+
+**NOTE**. If using Python 3.6 or 3.7, version 0.1.3 will be installed instead, which has a known issue with running `fbarber find_seq` with the `--case-insensitive` option. We recommend upgrading to Python3.8+ or skipping the `--case-insensitive` option (in the scope of this tutorial).
+
+## Download other scripts
+
+```bash
+git clone https://github.com/GG-space/gpseq-preprocessing-example.git
+cp -rv gpseq-preprocessing-example/scripts .
+rm -rf gpseq-preprocessing-example
+chmod +x scripts/*
 ```
 
 ## Parameters
